@@ -1,0 +1,27 @@
+
+Este proyecto implementa una encuesta web en la que los usuarios pueden votar por su lenguaje de programación favorito y ver los resultados actualizados en tiempo real.
+
+- Pregunta: ¿Cuál es tu lenguaje de programación favorito?
+- Opciones de respuesta:
+  - JavaScript
+  - Python
+  - C++
+  - Otro
+- Botón "Votar":
+  - Registra el voto del usuario.
+  - Actualiza el conteo y porcentaje de votos de cada opción.
+  - Bloquea el formulario para evitar múltiples votos por usuario.
+- Visualización de resultados en tiempo real:
+  - Tabla con número de votos y porcentajes.
+  - Barras de progreso dinámicas.
+- Los datos se manejan en memoria (entonces se reinician al recargar la página).
+
+
+- HTML: estructura de la página.
+- CSS++: estilos y presentación visual.
+- JavaScript: lógica de captura de votos, cálculo de porcentajes y actualización dinámica.
+
+
+1. Clonar el repositorio:
+   bash
+   ejemplo: git clone https://github.com/<tu-usuario>/encuesta-lenguajes.git
