@@ -21,7 +21,5 @@ Este proyecto implementa una encuesta web en la que los usuarios pueden votar po
 - CSS++: estilos y presentación visual.
 - JavaScript: lógica de captura de votos, cálculo de porcentajes y actualización dinámica.
 
-
-1. Clonar el repositorio:
-   bash
-   ejemplo: git clone https://github.com/<tu-usuario>/encuesta-lenguajes.git
+..
+..
