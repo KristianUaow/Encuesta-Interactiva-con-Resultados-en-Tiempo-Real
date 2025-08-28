@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.5"/>
+  <title>Encuesta: Lenguaje Favorito</title>
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --ink:#e5e7eb; --muted:#94a3b8; --accent:#22c55e; }
+    *{ box-sizing:border-box; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial; }
+    body{ margin:0; background:linear-gradient(160deg,#0b1024,#111827); color:var(--ink); display:grid; place-items:center; min-height:100vh; padding:24px;}
+    .wrap{ width:min(900px,100%); display:grid; gap:16px;}
+    .card{ background:var(--card); border:1px solid #1f2937; border-radius:16px; padding:20px; box-shadow:0 10px 25px rgba(0,0,0,.25);}
+    h1{ margin:0 0 8px; font-size:1.4rem;}
+    p{ color:var(--muted); margin:.25rem 0 1rem; }
+    fieldset{ border:none; padding:0; margin:0; display:grid; gap:.5rem;}
+    label{ display:flex; align-items:center; gap:.65rem; padding:.5rem .6rem; background:#189f9f; border:1px solid #1f2937; border-radius:12px; cursor:pointer; }
+    input[type="radio"]{ accent-color:var(--accent); transform:scale(1.15); }
+    button{ margin-top:12px; background:var(--accent); border:none; color:#052e16; padding:.8rem 1.2rem; border-radius:12px; font-weight:700; cursor:pointer; }
+    button:disabled{ opacity:.55; cursor:not-allowed; }
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    table{ width:100%; border-collapse:collapse; }
+    th, td{ padding:.6rem .5rem; text-align:left; border-bottom:1px solid #1f2937; }
+    th{ color:#a3e635; font-weight:700; }
+    .bar{ height:8px; border-radius:999px; background:#88d63a; position:relative; overflow:hidden; }
+    .bar > span{ position:absolute; inset:0 100% 0 0; background:linear-gradient(90deg,#22c55e,#16a34a); transition:inset .35s ease; }
+    .tot{ font-weight:700; }
+    .hint{ color:#fca5a5; margin-top:8px; min-height:1.2rem;}
+    footer{ color:var(--muted); text-align:center; font-size:.9rem; }
+    @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Encuesta: ¿Cuál es tu lenguaje de programación preferido o favorito?</h1>
+      <p>Elige una opción y presiona <b>VOTAR</b>. Los resultados se actualizan al instante.</p>
+
+      <form id="pollForm">
+        <fieldset id="options">
+          <label><input type="radio" name="lang" value="JavaScript"> JavaScript</label>
+          <label><input type="radio" name="lang" value="Python"> Python</label>
+          <label><input type="radio" name="lang" value="C++"> C++</label>
+          <label><input type="radio" name="lang" value="Otro"> Otro</label>
+        </fieldset>
+        <button type="submit" id="voteBtn">Votar</button>
+        <div class="hint" id="msg"></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2 style="margin-top:0">Resultados</h2>
+      <div class="grid">
+        <div>
+          <table>
+            <thead>
+              <tr><th>Opción</th><th>Votos</th><th>%</th></tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+            <tfoot>
+              <tr><td class="tot">Total</td><td class="tot" id="totalVotes">0</td><td class="tot">100%</td></tr>
+            </tfoot>
+          </table>
+        </div>
+        <div id="bars"></div>
+      </div>
+    </section>
+
+    <footer> No se guardan datos entre sesiones.</footer>
+  </main>
+
+  <script>
+  
+    const options = ["JavaScript","Python","C++","Otro"];
+    const votes = Object.fromEntries(options.map(o => [o, 0]));
+    let hasVoted = false; 
+
+   
+    const form = document.getElementById('pollForm');
+    const msg  = document.getElementById('msg');
+    const resultsBody = document.getElementById('resultsBody');
+    const bars = document.getElementById('bars');
+    const voteBtn = document.getElementById('voteBtn');
+    const totalVotesEl = document.getElementById('totalVotes');
+
+   
+    function render() {
+      const total = Object.values(votes).reduce((a,b)=>a+b,0);
+     
+      resultsBody.innerHTML = options.map(o => {
+        const pct = total ? ((votes[o]/total)*100).toFixed(1) : "0.0";
+        return `<tr><td>${o}</td><td>${votes[o]}</td><td>${pct}%</td></tr>`;
+      }).join("");
+      totalVotesEl.textContent = total;
+
+      
+      bars.innerHTML = options.map(o => {
+        const pct = total ? (votes[o]/total)*100 : 0;
+        return `
+          <div style="margin:.55rem 0;">
+            <div style="display:flex;justify-content:space-between;">
+              <strong>${o}</strong><span>${pct.toFixed(1)}%</span>
+            </div>
+            <div class="bar"><span style="inset:0 ${100-pct}% 0 0"></span></div>
+          </div>`;
+      }).join("");
+    }
+
+    
+    function lockForm() {
+      form.querySelectorAll('input[type="radio"]').forEach(i => i.disabled = true);
+      voteBtn.disabled = true;
+    }
+
+    
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (hasVoted) return;
+
+      const choice = form.elements['lang'].value;
+      if (!choice) {
+        msg.textContent = "Selecciona una opción antes de votar.";
+        return;
+      }
+
+      votes[choice] += 1;   
+      hasVoted = true;
+      msg.textContent = "¡Gracias por participar! Tu voto fue registrado.";
+      lockForm();           
+      render();            
+    });
+
+    render();
+  </script>
+</body>
+</html>
